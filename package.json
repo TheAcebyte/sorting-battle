@@ -1,0 +1,26 @@
+{
+  "name": "sorting-battle",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev:client": "esbuild src/client/*/index.ts --bundle --outdir=dist --outbase=src --watch",
+    "dev:server": "tsx watch src/server/index.ts",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "build:client": "esbuild src/client/*/index.ts --bundle --minify --outdir=dist --outbase=src && node scripts/copy-assets.js",
+    "build:server": "tsc -p tsconfig.server.json",
+    "build": "npm run build:client && npm run build:server",
+    "start": "node dist/server/index.js"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.0",
+    "concurrently": "^10.0.5",
+    "esbuild": "^0.28.2",
+    "prettier": "^3.9.6",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

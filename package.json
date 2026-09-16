@@ -2,10 +2,10 @@
   "name": "sorting-battle",
   "main": "dist/index.js",
   "scripts": {
-    "dev:client": "esbuild src/client/*/index.ts --bundle --outdir=dist --outbase=src --watch",
+    "dev:client": "esbuild src/client/*/index.ts --bundle --tsconfig=tsconfig.client.json --outdir=dist --outbase=src --watch",
     "dev:server": "tsx watch src/server/index.ts",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
-    "build:client": "esbuild src/client/*/index.ts --bundle --minify --outdir=dist --outbase=src && node scripts/copy-assets.js",
+    "build:client": "esbuild src/client/*/index.ts --bundle --minify --tsconfig=tsconfig.client.json --outdir=dist --outbase=src && node scripts/copy-assets.js",
     "build:server": "tsc -p tsconfig.server.json",
     "build": "npm run build:client && npm run build:server",
     "start": "node dist/server/index.js"

@@ -3,9 +3,15 @@ import path from "path";
 
 const PAGE_BASE_DIR = "src/client";
 const DIST_BASE_DIR = "dist/client";
-const isAsset = file => file.endsWith("html") || file.endsWith("css");
 
-const pages = fs.readdirSync(PAGE_BASE_DIR);
+const isAsset = file => file.endsWith("html") || file.endsWith("css");
+const isDirectory = item => {
+  const itemPath = path.join(PAGE_BASE_DIR, item);
+  const stats = fs.lstatSync(itemPath);
+  return stats.isDirectory();
+};
+
+const pages = fs.readdirSync(PAGE_BASE_DIR).filter(isDirectory);
 for (const page of pages) {
   const pagePath = path.join(PAGE_BASE_DIR, page);
   const distPath = path.join(DIST_BASE_DIR, page);
@@ -13,9 +19,9 @@ for (const page of pages) {
   const assets = files.filter(isAsset);
 
   fs.mkdirSync(distPath, { recursive: true });
-  assets.forEach(asset => {
+  for (const asset of assets) {
     const sourcePath = path.join(pagePath, asset);
     const targetPath = path.join(distPath, asset);
     fs.copyFileSync(sourcePath, targetPath);
-  });
+  }
 }

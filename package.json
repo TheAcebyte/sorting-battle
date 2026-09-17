@@ -1,26 +1,30 @@
 {
   "name": "sorting-battle",
-  "main": "dist/index.js",
   "scripts": {
     "dev:client": "esbuild src/client/*/index.ts --bundle --tsconfig=tsconfig.client.json --outdir=dist --outbase=src --watch",
-    "dev:server": "tsx watch src/server/index.ts",
+    "dev:server": "tsx watch --tsconfig tsconfig.server.json src/server/index.ts",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "build:client": "esbuild src/client/*/index.ts --bundle --minify --tsconfig=tsconfig.client.json --outdir=dist --outbase=src && node scripts/copy-assets.js",
-    "build:server": "tsc -p tsconfig.server.json",
+    "build:server": "tsc -p tsconfig.server.json && tsc-alias -p tsconfig.server.json",
     "build": "npm run build:client && npm run build:server",
     "start": "node dist/server/index.js"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/express": "^5.0.6",
+    "@types/express-session": "^1.19.0",
     "@types/node": "^26.6.0",
     "concurrently": "^10.0.5",
     "esbuild": "^0.28.2",
     "prettier": "^3.9.6",
-    "prettier-plugin-organize-imports": "^4.3.0",
+    "tsc-alias": "^1.9.5",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   }
 }

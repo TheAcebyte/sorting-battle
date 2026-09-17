@@ -1,5 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/prettierrc.json",
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "printWidth": 80,
   "tabWidth": 2,
   "useTabs": false,
@@ -10,5 +11,6 @@
   "bracketSpacing": true,
   "arrowParens": "avoid",
   "endOfLine": "lf",
-  "plugins": ["prettier-plugin-organize-imports"]
+  "importOrder": ["^@core/(.*)$", "^@server/(.*)$", "^@ui/(.*)$", "^[./]"],
+  "importOrderSortSpecifiers": true
 }

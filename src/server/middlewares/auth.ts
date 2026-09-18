@@ -1,10 +1,16 @@
 import { env } from "@/env";
 import { NextFunction, Request, Response } from "express";
-import session from "express-session";
+import session, { SessionData } from "express-session";
 
 declare module "express-session" {
   interface SessionData {
-    authorized: boolean;
+    authorized?: boolean;
+  }
+}
+
+declare module "http" {
+  interface IncomingMessage {
+    session: SessionData;
   }
 }
 

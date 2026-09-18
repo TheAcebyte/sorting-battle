@@ -5,8 +5,8 @@
     "module": "commonjs",
     "lib": ["ES2022"],
     "types": ["*"],
-    "outDir": "./dist/server/",
-    "rootDir": "./src/server/",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -14,7 +14,8 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "paths": {
-      "@/*": ["./src/server/*"]
+      "@/*": ["./src/server/*"],
+      "@shared/*": ["./src/shared/*"]
     }
   },
   "include": ["src/server/**/*"]

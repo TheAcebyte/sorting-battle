@@ -1,6 +1,7 @@
-import { env } from "@/env";
+import { Router } from "express";
 import { NextFunction, Request, Response } from "express";
 import session, { SessionData } from "express-session";
+import { env } from "./env";
 
 declare module "express-session" {
   interface SessionData {
@@ -27,8 +28,22 @@ export const authMiddleware = (
   next: NextFunction,
 ) => {
   if (!request.session.authorized) {
-    return response.status(401).send("Unauthorized request");
+    return response.status(401).redirect("/401");
   }
 
   next();
 };
+
+const authRouter = Router();
+
+authRouter.post("/auth", (request, response) => {
+  const password = request.body.password as string;
+  if (password !== env.PASSWORD) {
+    return response.status(401).send("Incorrect password");
+  }
+
+  request.session.authorized = true;
+  response.redirect("/admin-room");
+});
+
+export { authRouter };

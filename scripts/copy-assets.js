@@ -3,8 +3,9 @@ import path from "path";
 
 const PAGE_BASE_DIR = "src/client";
 const DIST_BASE_DIR = "dist/client";
+const ASSET_EXTENSIONS = ["html", "css", "svg"];
 
-const isAsset = file => file.endsWith("html") || file.endsWith("css");
+const isAsset = file => ASSET_EXTENSIONS.some(extension => file.endsWith(extension));
 const isDirectory = item => {
   const itemPath = path.join(PAGE_BASE_DIR, item);
   const stats = fs.lstatSync(itemPath);

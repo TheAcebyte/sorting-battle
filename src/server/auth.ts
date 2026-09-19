@@ -39,11 +39,11 @@ const authRouter = Router();
 authRouter.post("/auth", (request, response) => {
   const password = request.body.password as string;
   if (password !== env.PASSWORD) {
-    return response.status(401).send("Incorrect password");
+    return response.status(401).json({ authenticated: false });
   }
 
   request.session.authorized = true;
-  response.redirect("/admin-room");
+  response.status(200).json({ authenticated: true });
 });
 
 export { authRouter };

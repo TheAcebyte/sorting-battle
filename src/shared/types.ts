@@ -1,4 +1,5 @@
 export interface Bar {
+  barId: string;
   playerId: string;
   height: number;
 };

@@ -6,6 +6,8 @@
   --fg-primary: #e5e4e8;
   --fg-secondary: #a9acd9;
   --fg-tertiary: #8488be;
+  --fg-muted: #BEBCC2;
+  --fg-error: #B94A4A;
 }
 
 * {
@@ -16,8 +18,8 @@
 }
 
 body {
+  height: 100dvh;
   background-color: var(--bg-primary);
-  min-height: 100vh;
   font-family: "Irish Grover", system-ui;
   display: grid;
   place-items: center;
@@ -54,11 +56,15 @@ body {
   color: var(--fg-primary);
   font-size: 56px;
   text-decoration: none;
-  transition: letter-spacing 0.25s;
+  transition: color 0.25s;
 }
 
 #button-join:hover {
-  letter-spacing: 4px;
+  color: var(--fg-muted);
+}
+
+#button-join:active {
+  translate: 0 2px;
 }
 
 #label-player-count {

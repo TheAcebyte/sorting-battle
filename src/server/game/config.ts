@@ -1,5 +1,5 @@
 export const config = {
-  MIN_BAR_HEIGHT: 1,
+  MIN_BAR_HEIGHT: 10,
   MAX_BAR_HEIGHT: 50,
-  FRAME_RATE: 0.5,
+  FRAME_RATE: 30,
 } as const;

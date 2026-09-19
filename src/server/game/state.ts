@@ -45,8 +45,9 @@ class Team {
       throw new Error("List of available heights is empty");
     }
 
+    const barId = randomUUID();
     const height = this.availableHeights.popLeft();
-    const bar = { playerId, height };
+    const bar = { barId, playerId, height };
     this.bars.push(bar);
   }
 

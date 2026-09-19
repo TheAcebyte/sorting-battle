@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
 
 :root {
-  --bg-primary: #33386F;
-  --bg-secondary: #3F4480;
-  --fg-primary: #E5E4E8;
-  --fg-secondary: #A9ACD9;
-  --fg-tertiary: #8488BE;
+  --bg-primary: #33386f;
+  --bg-secondary: #3f4480;
+  --fg-primary: #e5e4e8;
+  --fg-secondary: #a9acd9;
+  --fg-tertiary: #8488be;
+  --fg-muted: #BEBCC2;
+  --fg-error: #B94A4A;
 }
 
 * {
@@ -16,8 +18,8 @@
 }
 
 body {
+  height: 100dvh;
   background-color: var(--bg-primary);
-  min-height: 100vh;
   font-family: "Irish Grover", system-ui;
   display: grid;
   place-items: center;

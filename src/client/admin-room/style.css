@@ -17,6 +17,12 @@
   margin: 0;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
 button {
   border-radius: 0;
   text-align: inherit;
@@ -155,4 +161,18 @@ body {
 
 .label-score.perfect {
   color: var(--fg-primary);
+}
+
+@media (max-height: 800px) {
+  #container {
+    padding: 1rem 0;
+  }
+
+  #container-display {
+    gap: 0;
+  }
+
+  #header {
+    display: none;
+  }
 }

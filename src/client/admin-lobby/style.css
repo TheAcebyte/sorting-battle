@@ -17,6 +17,12 @@
   margin: 0;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
 button {
   border-radius: 0;
   text-align: inherit;
@@ -93,4 +99,18 @@ body {
 
 #input-password::placeholder {
   font-size: 32px;
+}
+
+@media (max-width: 768px) {
+  #header, #button-login {
+    font-size: 40px;
+  }
+
+  #header::before {
+    inset: -72px;
+  }
+
+  #input-password {
+    font-size: 24px;
+  }
 }

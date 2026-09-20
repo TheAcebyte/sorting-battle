@@ -17,6 +17,12 @@
   margin: 0;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
 body {
   height: 100dvh;
   background-color: var(--bg-primary);
@@ -76,4 +82,18 @@ body {
 #label-player-count {
   color: var(--fg-secondary);
   font-size: 32px;
+}
+
+@media (max-width: 768px) {
+  #header, #button-join {
+    font-size: 40px;
+  }
+
+  #header::before {
+    inset: -72px;
+  }
+
+  #label-player-count {
+    font-size: 24px;
+  }
 }

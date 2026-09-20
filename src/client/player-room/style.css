@@ -136,4 +136,9 @@ body {
   right: 48px;
   color: var(--fg-secondary);
   font-size: 28px;
+  transition: color 0.25s;
+}
+
+.label-score.perfect {
+  color: var(--fg-primary);
 }

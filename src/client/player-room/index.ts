@@ -3,6 +3,8 @@ import io from "socket.io-client";
 import { Renderer } from "./renderer";
 
 const socket = io("/player-room");
+const leftArrowButton = document.getElementById("button-left-arrow")!;
+const rightArrowButton = document.getElementById("button-right-arrow")!;
 
 const teamOneCanvas = document.querySelector(
   "#container-team-1 .canvas-game",
@@ -12,8 +14,13 @@ const teamTwoCanvas = document.querySelector(
   "#container-team-2 .canvas-game",
 ) as HTMLCanvasElement;
 
-const leftArrowButton = document.getElementById("button-left-arrow")!;
-const rightArrowButton = document.getElementById("button-right-arrow")!;
+const teamOneScoreLabel = document.querySelector(
+  "#container-team-1 .label-score",
+)!;
+
+const teamTwoScoreLabel = document.querySelector(
+  "#container-team-2 .label-score",
+)!;
 
 const teamOneRenderer = new Renderer(teamOneCanvas, {
   color: "#662929",
@@ -34,6 +41,25 @@ socket.on("data:state", (state: GameStateData) => {
   teamOneRenderer.updateBars(state.teamOne.bars);
   teamTwoRenderer.updateBars(state.teamTwo.bars);
 
+  const teamOneSize = state.teamOne.bars.length;
+  const teamTwoSize = state.teamOne.bars.length;
+  const teamOneScore = state.teamOne.score;
+  const teamTwoScore = state.teamTwo.score;
+  teamOneScoreLabel.textContent = `${teamOneScore} / ${teamOneSize}`;
+  teamTwoScoreLabel.textContent = `${teamTwoScore} / ${teamTwoSize}`;
+
+  if (teamOneScore === teamOneSize) {
+    teamOneScoreLabel.classList.add("perfect");
+  } else {
+    teamOneScoreLabel.classList.remove("perfect");
+  }
+
+  if (teamTwoScore === teamTwoSize) {
+    teamTwoScoreLabel.classList.add("perfect");
+  } else {
+    teamTwoScoreLabel.classList.remove("perfect");
+  }
+
   if (state.paused) {
     leftArrowButton.setAttribute("data-disabled", "");
     rightArrowButton.setAttribute("data-disabled", "");
@@ -45,14 +71,16 @@ socket.on("data:state", (state: GameStateData) => {
 
 leftArrowButton.addEventListener("click", () => {
   const isDisabled = leftArrowButton.hasAttribute("data-disabled");
-  if (isDisabled) return;
-  socket.emit("input:swap-left");
+  if (!isDisabled) {
+    socket.emit("input:swap-left");
+  }
 });
 
 rightArrowButton.addEventListener("click", () => {
   const isDisabled = rightArrowButton.hasAttribute("data-disabled");
-  if (isDisabled) return;
-  socket.emit("input:swap-right");
+  if (!isDisabled) {
+    socket.emit("input:swap-right");
+  }
 });
 
 function render() {

@@ -61,8 +61,14 @@ export function registerGameEvents(io: Server) {
     const data = {
       paused: state.isPaused(),
       playerCount: state.getPlayerCount(),
-      teamOne: { bars: state.getTeamOneBars() },
-      teamTwo: { bars: state.getTeamTwoBars() },
+      teamOne: {
+        bars: state.getTeamOneBars(),
+        score: state.getTeamOneScore(),
+      },
+      teamTwo: {
+        bars: state.getTeamTwoBars(),
+        score: state.getTeamTwoScore(),
+      },
     } satisfies GameStateData;
     playerRoom.emit("data:state", data);
     adminRoom.emit("data:state", data);

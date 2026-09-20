@@ -6,11 +6,15 @@ import { config } from "./config";
 
 class Team {
   private bars: Bar[];
+  private sortedBars: Bar[];
   private availableHeights: Deque<number>;
+  private score: number;
 
   public constructor() {
     this.bars = [];
+    this.sortedBars = [];
     this.availableHeights = this.generateAvailableHeights();
+    this.score = 0;
   }
 
   private generateAvailableHeights() {
@@ -23,6 +27,7 @@ class Team {
   public getBars() {
     return this.bars;
   }
+
   public getSize() {
     return this.bars.length;
   }
@@ -40,6 +45,23 @@ class Team {
     return this.bars.some(bar => bar.playerId === playerId);
   }
 
+  private getHeightRank(height: number) {
+    const n = this.sortedBars.length;
+    let l = 0;
+    let r = n;
+    while (l < r) {
+      const m = l + Math.floor((r - l) / 2);
+      const bar = this.sortedBars[m];
+      if (bar.height < height) {
+        l = m + 1;
+      } else {
+        r = m;
+      }
+    }
+
+    return l;
+  }
+
   public addPlayer(playerId: string) {
     if (this.availableHeights.isEmpty()) {
       throw new Error("List of available heights is empty");
@@ -49,6 +71,14 @@ class Team {
     const height = this.availableHeights.popLeft();
     const bar = { barId, playerId, height };
     this.bars.push(bar);
+
+    const i = this.getHeightRank(height);
+    this.sortedBars = [
+      ...this.sortedBars.slice(0, i),
+      bar,
+      ...this.sortedBars.slice(i),
+    ];
+    this.calculateScore();
   }
 
   public removePlayer(playerId: string) {
@@ -56,35 +86,82 @@ class Team {
     const { height } = this.bars[i];
     this.bars.splice(i, 1);
     this.availableHeights.pushRight(height);
+
+    const j = this.getHeightRank(height);
+    this.sortedBars.splice(j, 1);
+    this.calculateScore();
   }
 
   public popPlayer() {
-    if (this.bars.length == 0) {
+    if (this.bars.length === 0) {
       throw new Error("Team is empty");
     }
 
     const { playerId, height } = this.bars.pop()!;
     this.availableHeights.pushRight(height);
+    const i = this.getHeightRank(height);
+    this.sortedBars.splice(i, 1);
+    this.calculateScore();
+
     return playerId;
   }
 
   public swapPlayerLeft(playerId: string) {
     const i = this.getPlayerIndex(playerId);
-    if (i > 0) {
-      swap(this.bars, i - 1, i);
-    }
+    if (i === 0) return;
+
+    this.decreaseScoreIfMatch(i - 1);
+    this.decreaseScoreIfMatch(i);
+    swap(this.bars, i - 1, i);
+    this.increaseScoreIfMatch(i - 1);
+    this.increaseScoreIfMatch(i);
   }
 
   public swapPlayerRight(playerId: string) {
     const n = this.bars.length;
     const i = this.getPlayerIndex(playerId);
-    if (i < n - 1) {
-      swap(this.bars, i, i + 1);
-    }
+    if (i === n - 1) return;
+
+    this.decreaseScoreIfMatch(i);
+    this.decreaseScoreIfMatch(i + 1);
+    swap(this.bars, i, i + 1);
+    this.increaseScoreIfMatch(i);
+    this.increaseScoreIfMatch(i + 1);
   }
 
   public shuffle() {
-    shuffleArray(this.bars);
+    this.bars = [...this.sortedBars];
+    shuffleArray(this.bars, true);
+    this.calculateScore();
+  }
+
+  public getScore() {
+    return this.score;
+  }
+
+  public hasPerfectScore() {
+    const n = this.bars.length;
+    return this.score === n;
+  }
+
+  public calculateScore() {
+    const n = this.bars.length;
+    this.score = 0;
+    for (let i = 0; i < n; ++i) {
+      this.increaseScoreIfMatch(i);
+    }
+  }
+
+  public decreaseScoreIfMatch(i: number) {
+    if (this.bars[i].height === this.sortedBars[i].height) {
+      --this.score;
+    }
+  }
+
+  public increaseScoreIfMatch(i: number) {
+    if (this.bars[i].height === this.sortedBars[i].height) {
+      ++this.score;
+    }
   }
 }
 
@@ -122,6 +199,14 @@ export class GameState {
     return this.teamTwo.getBars();
   }
 
+  public getTeamOneScore() {
+    return this.teamOne.getScore();
+  }
+
+  public getTeamTwoScore() {
+    return this.teamTwo.getScore();
+  }
+
   public createPlayer() {
     const playerId = randomUUID();
     const team = keyedMin(this.teamOne, this.teamTwo, team => team.getSize());
@@ -148,8 +233,10 @@ export class GameState {
     if (this.paused) return;
     if (this.teamOne.hasPlayer(playerId)) {
       this.teamOne.swapPlayerLeft(playerId);
+      this.checkPerfectScore();
     } else if (this.teamTwo.hasPlayer(playerId)) {
       this.teamTwo.swapPlayerLeft(playerId);
+      this.checkPerfectScore();
     } else {
       throw new Error(
         `Could not find player with ID ${playerId} in either team`,
@@ -161,8 +248,10 @@ export class GameState {
     if (this.paused) return;
     if (this.teamOne.hasPlayer(playerId)) {
       this.teamOne.swapPlayerRight(playerId);
+      this.checkPerfectScore();
     } else if (this.teamTwo.hasPlayer(playerId)) {
       this.teamTwo.swapPlayerRight(playerId);
+      this.checkPerfectScore();
     } else {
       throw new Error(
         `Could not find player with ID ${playerId} in either team`,
@@ -243,6 +332,12 @@ export class GameState {
       this.pause();
     } else {
       this.resume();
+    }
+  }
+
+  public checkPerfectScore() {
+    if (this.teamOne.hasPerfectScore() || this.teamTwo.hasPerfectScore()) {
+      this.pause();
     }
   }
 }

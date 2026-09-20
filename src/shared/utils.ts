@@ -8,10 +8,11 @@ export function getRandomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function shuffleArray<T>(a: T[]) {
+export function shuffleArray<T>(a: T[], derangement: boolean = false) {
   const n = a.length;
-  for (let i = n - 1; i >= 0; --i) {
-    const j = getRandomInteger(0, i);
+  const offset = derangement ? 1 : 0;
+  for (let i = n - 1; i > 0; --i) {
+    const j = getRandomInteger(0, i - offset);
     swap(a, i, j);
   }
 }

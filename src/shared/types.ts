@@ -6,6 +6,7 @@ export interface Bar {
 
 interface Team {
   bars: Bar[];
+  score: number;
 };
 
 export interface GameStateData {

@@ -1,3 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
+
+:root {
+  --bg-primary: #33386f;
+  --bg-secondary: #3f4480;
+  --fg-primary: #e5e4e8;
+  --fg-secondary: #a9acd9;
+  --fg-tertiary: #8488be;
+  --fg-muted: #bebcc2;
+  --fg-error: #b94a4a;
+}
+
 * {
   font: inherit;
   box-sizing: border-box;
@@ -5,6 +17,128 @@
   margin: 0;
 }
 
+button {
+  border-radius: 0;
+  text-align: inherit;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  color: inherit;
+  font: inherit;
+}
+
 body {
-  min-height: 100vh;
+  height: 100dvh;
+  background-color: var(--bg-primary);
+  font-family: "Irish Grover", system-ui;
+}
+
+#container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3rem 0 2rem 0;
+}
+
+#header {
+  position: relative;
+  color: var(--bg-primary);
+  font-size: 40px;
+}
+
+#header::before {
+  content: "";
+  position: absolute;
+  inset: -72px;
+  background-image: url("header-banner.svg");
+  background-position: center;
+  background-size: 100% 100%;
+  z-index: -1;
+}
+
+#container-control {
+  display: flex;
+  gap: 8rem;
+}
+
+.button-icon {
+  height: 64px;
+  background-color: var(--fg-primary);
+  mask-position: center;
+  mask-size: cover;
+  transition: background-color 0.25s;
+}
+
+.button-icon:hover {
+  background-color: var(--fg-muted);
+}
+
+.button-icon:active {
+  translate: 0 2px;
+}
+
+#button-shuffle {
+  aspect-ratio: 105 / 91;
+  mask-image: url("shuffle.svg");
+}
+
+#button-play[data-state="pause"] {
+  aspect-ratio: 95 / 90;
+  mask-image: url("pause.svg");
+}
+
+#button-play[data-state="resume"] {
+  aspect-ratio: 95 / 90;
+  mask-image: url("resume.svg");
+}
+
+#button-balance {
+  aspect-ratio: 100 / 109;
+  mask-image: url("balance.svg");
+} 
+
+#container-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#label-vs {
+  color: var(--fg-primary);
+  font-size: 32px;
+}
+
+#container-team-1 .canvas-game {
+  aspect-ratio: 1775 / 288;
+  height: 264px;
+  background-color: var(--bg-secondary);
+  mask-image: url("canvas-mask-1.svg");
+  mask-position: center;
+  mask-size: cover;
+}
+
+#container-team-2 .canvas-game {
+  aspect-ratio: 1790 / 286;
+  height: 264px;
+  background-color: var(--bg-secondary);
+  mask-image: url("canvas-mask-2.svg");
+  mask-position: center;
+  mask-size: cover;
+}
+
+#container-team-1, #container-team-2 {
+  position: relative;
+}
+
+.label-score {
+  position: absolute;
+  top: 32px;
+  right: 48px;
+  color: var(--fg-secondary);
+  font-size: 28px;
 }

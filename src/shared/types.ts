@@ -9,6 +9,7 @@ interface Team {
 };
 
 export interface GameStateData {
+  paused: boolean;
   playerCount: number;
   teamOne: Team;
   teamTwo: Team;

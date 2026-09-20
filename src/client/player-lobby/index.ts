@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 const label = document.getElementById("label-player-count")!;
-const socket = io("/lobby");
+const socket = io("/player-lobby");
 
 function capitalize(word: string, count: number) {
   const s = count === 1 ? "" : "s";

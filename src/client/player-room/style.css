@@ -68,29 +68,32 @@ body {
 .button-icon {
   height: 64px;
   background-color: var(--fg-primary);
+  mask-position: center;
+  mask-size: cover;
   transition: background-color 0.25s;
+}
+
+.button-icon[data-disabled] {
+  cursor: inherit;
+  background-color: var(--fg-muted);
 }
 
 .button-icon:hover {
   background-color: var(--fg-muted);
 }
 
-.button-icon:active {
+.button-icon:not([data-disabled]):active {
   translate: 0 2px;
 }
 
 #button-left-arrow {
   aspect-ratio: 100 / 82;
   mask-image: url("left-arrow.svg");
-  mask-position: center;
-  mask-size: cover;
 }
 
 #button-right-arrow {
   aspect-ratio: 100 / 82;
   mask-image: url("right-arrow.svg");
-  mask-position: center;
-  mask-size: cover;
 }
 
 #container-display {

@@ -5,10 +5,16 @@ import { GameState } from "./state";
 
 export function registerGameEvents(io: Server) {
   const state = new GameState();
-  const game = io.of("/game");
-  const lobby = io.of("/lobby");
+  const playerLobby = io.of("/player-lobby");
+  const playerRoom = io.of("/player-room");
+  const adminRoom = io.of("admin-room");
 
-  game.on("connection", socket => {
+  playerLobby.on("connection", socket => {
+    const playerCount = state.getPlayerCount();
+    socket.emit("data:player-count", playerCount);
+  });
+
+  playerRoom.on("connection", socket => {
     const playerId = state.createPlayer();
     socket.emit("data:player-id", playerId);
     socket.on("disconnect", () => {
@@ -22,7 +28,9 @@ export function registerGameEvents(io: Server) {
     socket.on("input:swap-right", () => {
       state.swapPlayerRight(playerId);
     });
+  });
 
+  adminRoom.on("connection", socket => {
     socket.on("input:pause", () => {
       if (!socket.request.session.authorized) return;
       state.pause();
@@ -43,32 +51,21 @@ export function registerGameEvents(io: Server) {
       state.balanceTeams();
     });
   });
-  
-  lobby.on("connection", socket => {
-    const playerCount = state.getPlayerCount();
-    socket.emit("data:player-count", playerCount);
-  });
 
   state.on("player:change", playerCount => {
-    lobby.emit("data:player-count", playerCount);
+    playerLobby.emit("data:player-count", playerCount);
   });
 
-  state.on("paused:on", () => {
-    game.emit("data:paused-on");
-  });
-
-  state.on("paused:off", () => {
-    game.emit("data:paused-off");
-  });
-
-  const delay = 1000 / config.FRAME_RATE;
+  const delay = 1000 / config.TICK_RATE;
   const broadcastState = () => {
     const data = {
+      paused: state.isPaused(),
       playerCount: state.getPlayerCount(),
       teamOne: { bars: state.getTeamOneBars() },
       teamTwo: { bars: state.getTeamTwoBars() },
     } satisfies GameStateData;
-    game.emit("data:state", data);
+    playerRoom.emit("data:state", data);
+    adminRoom.emit("data:state", data);
   };
 
   setInterval(broadcastState, delay);

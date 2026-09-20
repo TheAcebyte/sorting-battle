@@ -20,7 +20,7 @@ const defaultRendererOptions = {
   color: "#FFFFFF",
   playerColor: "#000000",
   width: 32,
-  heightStep: 4,
+  heightStep: 5,
   gap: 16,
   swapDuration: 500,
   swapEasing: easeOutExpo,

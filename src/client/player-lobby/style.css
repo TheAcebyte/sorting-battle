@@ -59,11 +59,17 @@ body {
   transition: color 0.25s;
 }
 
+#button-join[data-disabled] {
+  cursor: inherit;
+  color: var(--fg-muted);
+  pointer-events: none;
+}
+
 #button-join:hover {
   color: var(--fg-muted);
 }
 
-#button-join:active {
+#button-join:not([data-disabled]):active {
   translate: 0 2px;
 }
 

@@ -2,10 +2,12 @@ import { GameStateData } from "@shared/types";
 import io from "socket.io-client";
 import { Renderer } from "./renderer";
 import { colors } from "./colors";
+import { enablePanning } from "./pan";
 
 const socket = io("/admin-room");
-const shuffleButton = document.getElementById("button-shuffle")!;
 const playButton = document.getElementById("button-play")!;
+const lockButton = document.getElementById("button-lock")!;
+const shuffleButton = document.getElementById("button-shuffle")!;
 const balanceButton = document.getElementById("button-balance")!;
 
 const teamOneCanvas = document.querySelector(
@@ -26,6 +28,9 @@ const teamTwoScoreLabel = document.querySelector(
 
 const teamOneRenderer = new Renderer(teamOneCanvas, colors.red);
 const teamTwoRenderer = new Renderer(teamTwoCanvas, colors.blue);
+
+enablePanning(teamOneCanvas);
+enablePanning(teamTwoCanvas);
 
 socket.on("data:state", (state: GameStateData) => {
   teamOneRenderer.updateBars(state.teamOne.bars);
@@ -58,14 +63,28 @@ socket.on("data:state", (state: GameStateData) => {
   playButton.setAttribute("data-state", playButtonState);
 });
 
-shuffleButton.addEventListener("click", () => {
-  socket.emit("input:shuffle");
+socket.on("data:room-lock", () => {
+  lockButton.setAttribute("data-state", "unlock");
+});
+
+socket.on("data:room-unlock", () => {
+  lockButton.setAttribute("data-state", "lock");
 });
 
 playButton.addEventListener("click", () => {
   const input = playButton.getAttribute("data-state")!;
   const event = "input:" + input;
   socket.emit(event);
+});
+
+lockButton.addEventListener("click", () => {
+  const input = lockButton.getAttribute("data-state");
+  const event = "input:" + input;
+  socket.emit(event);
+});
+
+shuffleButton.addEventListener("click", () => {
+  socket.emit("input:shuffle");
 });
 
 balanceButton.addEventListener("click", () => {

@@ -1,3 +1,4 @@
+import { roomLock } from "@/room-lock";
 import { GameStateData } from "@shared/types";
 import { Server } from "socket.io";
 import { config } from "./config";
@@ -12,6 +13,9 @@ export function registerGameEvents(io: Server) {
   playerLobby.on("connection", socket => {
     const playerCount = state.getPlayerCount();
     socket.emit("data:player-count", playerCount);
+
+    const event = roomLock.get() ? "data:room-lock" : "data-room-unlock";
+    socket.emit(event);
   });
 
   playerRoom.on("connection", socket => {
@@ -50,10 +54,26 @@ export function registerGameEvents(io: Server) {
       if (!socket.request.session.authorized) return;
       state.balanceTeams();
     });
+
+    socket.on("input:lock", () => {
+      if (!socket.request.session.authorized) return;
+      roomLock.set(true);
+    });
+
+    socket.on("input:unlock", () => {
+      if (!socket.request.session.authorized) return;
+      roomLock.set(false);
+    });
   });
 
   state.on("player:change", playerCount => {
     playerLobby.emit("data:player-count", playerCount);
+  });
+
+  roomLock.onChange(locked => {
+    const event = locked ? "data:room-lock" : "data:room-unlock";
+    playerLobby.emit(event);
+    adminRoom.emit(event);
   });
 
   const delay = 1000 / config.TICK_RATE;

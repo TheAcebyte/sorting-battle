@@ -81,11 +81,6 @@ body {
   translate: 0 2px;
 }
 
-#button-shuffle {
-  aspect-ratio: 105 / 91;
-  mask-image: url("shuffle.svg");
-}
-
 #button-play[data-state="pause"] {
   aspect-ratio: 95 / 90;
   mask-image: url("pause.svg");
@@ -96,8 +91,23 @@ body {
   mask-image: url("resume.svg");
 }
 
+#button-lock[data-state="lock"] {
+  aspect-ratio: 1 / 1;
+  mask-image: url("lock.svg");
+}
+
+#button-lock[data-state="unlock"] {
+  aspect-ratio: 1 / 1;
+  mask-image: url("unlock.svg");
+}
+
+#button-shuffle {
+  aspect-ratio: 105 / 91;
+  mask-image: url("shuffle.svg");
+}
+
 #button-balance {
-  aspect-ratio: 100 / 109;
+  aspect-ratio: 100 / 117;
   mask-image: url("balance.svg");
 } 
 
@@ -141,4 +151,8 @@ body {
   right: 48px;
   color: var(--fg-secondary);
   font-size: 28px;
+}
+
+.label-score.perfect {
+  color: var(--fg-primary);
 }

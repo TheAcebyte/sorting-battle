@@ -1,6 +1,7 @@
 import { GameStateData } from "@shared/types";
 import io from "socket.io-client";
 import { Renderer } from "./renderer";
+import { enablePanning } from "./pan";
 import { colors } from "./colors";
 
 const socket = io("/player-room");
@@ -25,6 +26,9 @@ const teamTwoScoreLabel = document.querySelector(
 
 const teamOneRenderer = new Renderer(teamOneCanvas, colors.red);
 const teamTwoRenderer = new Renderer(teamTwoCanvas, colors.blue);
+
+enablePanning(teamOneCanvas);
+enablePanning(teamTwoCanvas);
 
 socket.on("data:player-id", (playerId: string) => {
   teamOneRenderer.setPlayerId(playerId);

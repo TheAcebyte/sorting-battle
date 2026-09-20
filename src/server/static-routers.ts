@@ -1,5 +1,6 @@
 import express, { RequestHandler, Router } from "express";
 import { authMiddleware } from "./auth";
+import { roomLockMiddleware } from "./room-lock";
 
 interface Route {
   route: string;
@@ -23,6 +24,7 @@ const routes: Route[] = [
   {
     route: "/room",
     assetPath: "dist/client/player-room",
+    middlewares: [roomLockMiddleware],
   },
   {
     route: "/admin-room",

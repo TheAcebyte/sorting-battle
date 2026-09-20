@@ -233,10 +233,10 @@ export class GameState {
     if (this.paused) return;
     if (this.teamOne.hasPlayer(playerId)) {
       this.teamOne.swapPlayerLeft(playerId);
-      this.checkPerfectScore();
+      this.checkPerfectScore(true, false);
     } else if (this.teamTwo.hasPlayer(playerId)) {
       this.teamTwo.swapPlayerLeft(playerId);
-      this.checkPerfectScore();
+      this.checkPerfectScore(false, true);
     } else {
       throw new Error(
         `Could not find player with ID ${playerId} in either team`,
@@ -248,10 +248,10 @@ export class GameState {
     if (this.paused) return;
     if (this.teamOne.hasPlayer(playerId)) {
       this.teamOne.swapPlayerRight(playerId);
-      this.checkPerfectScore();
+      this.checkPerfectScore(true, false);
     } else if (this.teamTwo.hasPlayer(playerId)) {
       this.teamTwo.swapPlayerRight(playerId);
-      this.checkPerfectScore();
+      this.checkPerfectScore(false, true);
     } else {
       throw new Error(
         `Could not find player with ID ${playerId} in either team`,
@@ -335,8 +335,11 @@ export class GameState {
     }
   }
 
-  public checkPerfectScore() {
-    if (this.teamOne.hasPerfectScore() || this.teamTwo.hasPerfectScore()) {
+  public checkPerfectScore(teamOne: boolean, teamTwo: boolean) {
+    if (
+      (teamOne && this.teamOne.hasPerfectScore()) ||
+      (teamTwo && this.teamTwo.hasPerfectScore())
+    ) {
       this.pause();
     }
   }

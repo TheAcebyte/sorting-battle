@@ -1,4 +1,8 @@
-process.loadEnvFile();
+try {
+  process.loadEnvFile();
+} catch (error) {
+  console.error("Could not load .env file");
+}
 
 export const env = {
   PORT: process.env.PORT!,

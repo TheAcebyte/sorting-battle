@@ -1,5 +1,5 @@
-import { Easing, easeOutExpo } from "@shared/easings";
-import { Interpolator } from "@shared/interpolator";
+import { Easing, easeInOutCubic, easeOutExpo } from "@shared/easings";
+import { ColorInterpolator, Interpolator } from "@shared/interpolator";
 import { Bar } from "@shared/types";
 
 type InterpolatedBar = Bar & { interpolatedX: Interpolator };
@@ -11,25 +11,33 @@ interface RendererOptions {
   heightStep: number;
   gap: number;
   swapDuration: number;
-  easing: Easing;
+  swapEasing: Easing;
+  colorDuration: number;
+  colorEasing: Easing;
 }
 
 const defaultRendererOptions = {
-  color: "white",
-  playerColor: "black",
+  color: "#FFFFFF",
+  playerColor: "#000000",
   width: 32,
   heightStep: 4,
   gap: 16,
   swapDuration: 500,
-  easing: easeOutExpo,
+  swapEasing: easeOutExpo,
+  colorDuration: 150,
+  colorEasing: easeInOutCubic,
 } as const satisfies RendererOptions;
+
+type InternalRendererOptions = Omit<RendererOptions, "color" | "playerColor">;
 
 export class Renderer {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private barMap: Map<string, InterpolatedBar>;
   private playerId: string | null;
-  private options: RendererOptions;
+  private options: InternalRendererOptions;
+  private color: ColorInterpolator;
+  private playerColor: ColorInterpolator;
 
   public constructor(
     canvas: HTMLCanvasElement,
@@ -39,7 +47,19 @@ export class Renderer {
     this.ctx = canvas.getContext("2d")!;
     this.barMap = new Map();
     this.playerId = null;
-    this.options = { ...defaultRendererOptions, ...options };
+
+    const { color, playerColor, ...internalOptions } = {
+      ...defaultRendererOptions,
+      ...options,
+    };
+
+    this.options = internalOptions;
+    this.color = new ColorInterpolator(color, this.options.colorEasing);
+    this.playerColor = new ColorInterpolator(
+      playerColor,
+      this.options.colorEasing,
+    );
+
     this.fitCanvasSize();
   }
 
@@ -54,6 +74,23 @@ export class Renderer {
 
   public setPlayerId(playerId: string) {
     this.playerId = playerId;
+  }
+
+  public setOptions(options: Partial<RendererOptions>) {
+    const { color, playerColor, ...internalOptions } = options;
+    this.options = { ...this.options, ...internalOptions };
+    if (color) this.setColor(color);
+    if (playerColor) this.setPlayerColor(playerColor);
+  }
+
+  public setColor(color: string) {
+    const duration = this.options.colorDuration;
+    this.color.set(color, duration);
+  }
+
+  public setPlayerColor(playerColor: string) {
+    const duration = this.options.colorDuration;
+    this.playerColor.set(playerColor, duration);
   }
 
   public updateBars(bars: Bar[]) {
@@ -75,7 +112,7 @@ export class Renderer {
         interpolatedX.set(x, this.options.swapDuration);
         temp.set(bar.barId, { ...bar, interpolatedX });
       } else {
-        const interpolatedX = new Interpolator(x, this.options.easing);
+        const interpolatedX = new Interpolator(x, this.options.swapEasing);
         temp.set(bar.barId, { ...bar, interpolatedX });
       }
     }
@@ -84,11 +121,13 @@ export class Renderer {
   }
 
   private drawBar(bar: InterpolatedBar) {
-    const { color, playerColor, width, heightStep } = this.options;
+    const { width, heightStep } = this.options;
     const height = bar.height * heightStep;
     const x = bar.interpolatedX.get();
     const y = this.canvas.height - height;
     const isPlayerBar = this.playerId && bar.playerId === this.playerId;
+    const color = this.color.get();
+    const playerColor = this.playerColor.get();
     this.ctx.fillStyle = isPlayerBar ? playerColor : color;
     this.ctx.fillRect(x, y, width, height);
   }

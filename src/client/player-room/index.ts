@@ -1,6 +1,7 @@
 import { GameStateData } from "@shared/types";
 import io from "socket.io-client";
 import { Renderer } from "./renderer";
+import { colors } from "./colors";
 
 const socket = io("/player-room");
 const leftArrowButton = document.getElementById("button-left-arrow")!;
@@ -22,15 +23,8 @@ const teamTwoScoreLabel = document.querySelector(
   "#container-team-2 .label-score",
 )!;
 
-const teamOneRenderer = new Renderer(teamOneCanvas, {
-  color: "#662929",
-  playerColor: "#B94A4A",
-});
-
-const teamTwoRenderer = new Renderer(teamTwoCanvas, {
-  color: "#213D60",
-  playerColor: "#3C6FAE",
-});
+const teamOneRenderer = new Renderer(teamOneCanvas, colors.red);
+const teamTwoRenderer = new Renderer(teamTwoCanvas, colors.blue);
 
 socket.on("data:player-id", (playerId: string) => {
   teamOneRenderer.setPlayerId(playerId);
@@ -42,7 +36,7 @@ socket.on("data:state", (state: GameStateData) => {
   teamTwoRenderer.updateBars(state.teamTwo.bars);
 
   const teamOneSize = state.teamOne.bars.length;
-  const teamTwoSize = state.teamOne.bars.length;
+  const teamTwoSize = state.teamTwo.bars.length;
   const teamOneScore = state.teamOne.score;
   const teamTwoScore = state.teamTwo.score;
   teamOneScoreLabel.textContent = `${teamOneScore} / ${teamOneSize}`;
@@ -50,14 +44,18 @@ socket.on("data:state", (state: GameStateData) => {
 
   if (teamOneScore === teamOneSize) {
     teamOneScoreLabel.classList.add("perfect");
+    teamOneRenderer.setOptions(colors.gold);
   } else {
     teamOneScoreLabel.classList.remove("perfect");
+    teamOneRenderer.setOptions(colors.red);
   }
 
   if (teamTwoScore === teamTwoSize) {
     teamTwoScoreLabel.classList.add("perfect");
+    teamTwoRenderer.setOptions(colors.gold);
   } else {
     teamTwoScoreLabel.classList.remove("perfect");
+    teamTwoRenderer.setOptions(colors.blue);
   }
 
   if (state.paused) {

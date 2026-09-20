@@ -1,6 +1,7 @@
 import { GameStateData } from "@shared/types";
 import io from "socket.io-client";
 import { Renderer } from "./renderer";
+import { colors } from "./colors";
 
 const socket = io("/admin-room");
 const shuffleButton = document.getElementById("button-shuffle")!;
@@ -23,20 +24,15 @@ const teamTwoScoreLabel = document.querySelector(
   "#container-team-2 .label-score",
 )!;
 
-const teamOneRenderer = new Renderer(teamOneCanvas, {
-  color: "#B94A4A",
-});
-
-const teamTwoRenderer = new Renderer(teamTwoCanvas, {
-  color: "#3C6FAE",
-});
+const teamOneRenderer = new Renderer(teamOneCanvas, colors.red);
+const teamTwoRenderer = new Renderer(teamTwoCanvas, colors.blue);
 
 socket.on("data:state", (state: GameStateData) => {
   teamOneRenderer.updateBars(state.teamOne.bars);
   teamTwoRenderer.updateBars(state.teamTwo.bars);
 
   const teamOneSize = state.teamOne.bars.length;
-  const teamTwoSize = state.teamOne.bars.length;
+  const teamTwoSize = state.teamTwo.bars.length;
   const teamOneScore = state.teamOne.score;
   const teamTwoScore = state.teamTwo.score;
   teamOneScoreLabel.textContent = `${teamOneScore} / ${teamOneSize}`;
@@ -44,14 +40,18 @@ socket.on("data:state", (state: GameStateData) => {
 
   if (teamOneScore === teamOneSize) {
     teamOneScoreLabel.classList.add("perfect");
+    teamOneRenderer.setOptions(colors.gold);
   } else {
     teamOneScoreLabel.classList.remove("perfect");
+    teamOneRenderer.setOptions(colors.red);
   }
 
   if (teamTwoScore === teamTwoSize) {
     teamTwoScoreLabel.classList.add("perfect");
+    teamTwoRenderer.setOptions(colors.gold);
   } else {
     teamTwoScoreLabel.classList.remove("perfect");
+    teamTwoRenderer.setOptions(colors.blue);
   }
 
   const playButtonState = state.paused ? "resume" : "pause";

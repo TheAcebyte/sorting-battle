@@ -16,20 +16,16 @@ function animateShake(element: HTMLElement) {
 }
 
 button.addEventListener("click", async () => {
-  try {
-    const password = input.value;
-    const response = await fetch("/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
+  const password = input.value;
+  const response = await fetch("/auth", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
 
-    if (response.ok) {
-      window.location.href = "/admin-room";
-    } else if (password.length > 0) {
-      animateShake(input);
-    }
-  } catch (error) {
-    throw error;
+  if (response.ok) {
+    window.location.href = "/admin-room";
+  } else if (password.length > 0) {
+    animateShake(input);
   }
 });

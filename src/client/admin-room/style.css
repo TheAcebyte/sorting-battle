@@ -1,13 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
 
 :root {
-  --bg-primary: #33386f;
-  --bg-secondary: #3f4480;
-  --fg-primary: #e5e4e8;
-  --fg-secondary: #a9acd9;
-  --fg-tertiary: #8488be;
-  --fg-muted: #bebcc2;
-  --fg-error: #b94a4a;
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #141414;
+  --fg-primary: #F5F5F4;
+  --fg-muted: #8B8D93;
+  --fg-accent: #60D835;
+  --fg-gold: #C49A32;
 }
 
 * {
@@ -155,12 +154,13 @@ body {
   position: absolute;
   top: 32px;
   right: 48px;
-  color: var(--fg-secondary);
+  color: var(--fg-primary);
   font-size: 28px;
+  transition: color 0.25s;
 }
 
 .label-score.perfect {
-  color: var(--fg-primary);
+  color: var(--fg-gold);
 }
 
 @media (max-height: 800px) {

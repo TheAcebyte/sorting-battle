@@ -24,8 +24,8 @@ const teamTwoScoreLabel = document.querySelector(
   "#container-team-2 .label-score",
 )!;
 
-const teamOneRenderer = new Renderer(teamOneCanvas, colors.red);
-const teamTwoRenderer = new Renderer(teamTwoCanvas, colors.blue);
+const teamOneRenderer = new Renderer(teamOneCanvas, colors.white);
+const teamTwoRenderer = new Renderer(teamTwoCanvas, colors.green);
 
 enablePanning(teamOneCanvas);
 enablePanning(teamTwoCanvas);
@@ -51,7 +51,7 @@ socket.on("data:state", (state: GameStateData) => {
     teamOneRenderer.setOptions(colors.gold);
   } else {
     teamOneScoreLabel.classList.remove("perfect");
-    teamOneRenderer.setOptions(colors.red);
+    teamOneRenderer.setOptions(colors.white);
   }
 
   if (teamTwoScore === teamTwoSize) {
@@ -59,7 +59,7 @@ socket.on("data:state", (state: GameStateData) => {
     teamTwoRenderer.setOptions(colors.gold);
   } else {
     teamTwoScoreLabel.classList.remove("perfect");
-    teamTwoRenderer.setOptions(colors.blue);
+    teamTwoRenderer.setOptions(colors.green);
   }
 
   if (state.paused) {

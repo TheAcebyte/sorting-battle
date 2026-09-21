@@ -1,15 +1,11 @@
 export const colors = {
   white: {
-    color: "#BEBCC2",
-    playerColor: "#E5E4E8",
+    color: "#8b8d93",
+    playerColor: "#f5f5f4",
   },
-  red: {
-    color: "#662929",
-    playerColor: "#B94A4A",
-  },
-  blue: {
-    color: "#213D60",
-    playerColor: "#3C6FAE",
+  green: {
+    color: "#1F4D2E",
+    playerColor: "#60D835",
   },
   gold: {
     color: "#5A4618",

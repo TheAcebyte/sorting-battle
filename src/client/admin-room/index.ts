@@ -1,8 +1,9 @@
 import { GameStateData } from "@shared/types";
 import io from "socket.io-client";
-import { Renderer } from "./renderer";
 import { colors } from "./colors";
-import { enablePanning } from "./pan";
+import { onDoubleClick } from "./on-double-click";
+import { onPan } from "./on-pan";
+import { Renderer } from "./renderer";
 
 const socket = io("/admin-room");
 const playButton = document.getElementById("button-play")!;
@@ -29,8 +30,21 @@ const teamTwoScoreLabel = document.querySelector(
 const teamOneRenderer = new Renderer(teamOneCanvas, colors.white);
 const teamTwoRenderer = new Renderer(teamTwoCanvas, colors.green);
 
-enablePanning(teamOneCanvas);
-enablePanning(teamTwoCanvas);
+onPan(teamOneCanvas, dx => {
+  teamOneRenderer.translateX(dx);
+});
+
+onPan(teamTwoCanvas, dx => {
+  teamTwoRenderer.translateX(dx);
+});
+
+onDoubleClick(teamOneCanvas, () => {
+  teamOneRenderer.recenter();
+});
+
+onDoubleClick(teamTwoCanvas, () => {
+  teamTwoRenderer.recenter();
+});
 
 socket.on("data:state", (state: GameStateData) => {
   teamOneRenderer.updateBars(state.teamOne.bars);

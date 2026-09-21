@@ -1,8 +1,9 @@
 import { GameStateData } from "@shared/types";
 import io from "socket.io-client";
-import { Renderer } from "./renderer";
-import { enablePanning } from "./pan";
 import { colors } from "./colors";
+import { onDoubleClick } from "./on-double-click";
+import { onPan } from "./on-pan";
+import { Renderer } from "./renderer";
 
 const socket = io("/player-room");
 const leftArrowButton = document.getElementById("button-left-arrow")!;
@@ -27,8 +28,21 @@ const teamTwoScoreLabel = document.querySelector(
 const teamOneRenderer = new Renderer(teamOneCanvas, colors.white);
 const teamTwoRenderer = new Renderer(teamTwoCanvas, colors.green);
 
-enablePanning(teamOneCanvas);
-enablePanning(teamTwoCanvas);
+onPan(teamOneCanvas, dx => {
+  teamOneRenderer.translateX(dx);
+});
+
+onPan(teamTwoCanvas, dx => {
+  teamTwoRenderer.translateX(dx);
+});
+
+onDoubleClick(teamOneCanvas, () => {
+  teamOneRenderer.recenter();
+});
+
+onDoubleClick(teamTwoCanvas, () => {
+  teamTwoRenderer.recenter();
+});
 
 socket.on("data:player-id", (playerId: string) => {
   teamOneRenderer.setPlayerId(playerId);

@@ -38,6 +38,7 @@ export class Renderer {
   private options: InternalRendererOptions;
   private color: ColorInterpolator;
   private playerColor: ColorInterpolator;
+  private offsetX: number;
 
   public constructor(
     canvas: HTMLCanvasElement,
@@ -60,6 +61,7 @@ export class Renderer {
       this.options.colorEasing,
     );
 
+    this.offsetX = 0;
     this.fitCanvasSize();
   }
 
@@ -99,7 +101,7 @@ export class Renderer {
       const { width, gap } = this.options;
       const listWidth = n * width + (n - 1) * gap;
       const startX = (this.canvas.width - listWidth) / 2;
-      const x = startX + index * (width + gap);
+      const x = this.offsetX + startX + index * (width + gap);
       return x;
     };
 
@@ -147,8 +149,35 @@ export class Renderer {
     }
 
     // Drawing the player bar for last to sit above the others
-    if (playerBar) {
-      this.drawBar(playerBar);
+    if (!playerBar) return;
+    this.drawBar(playerBar);
+  }
+
+  public resetOffsetX() {
+    this.offsetX = 0;
+  }
+
+  public translateX(dx: number) {
+    this.offsetX += dx;
+  }
+
+  public recenter() {
+    const bars = this.barMap.values();
+    let playerBar: InterpolatedBar | null = null;
+    for (const bar of bars) {
+      const isPlayerBar = this.playerId && bar.playerId === this.playerId;
+      if (isPlayerBar) {
+        playerBar = bar;
+        break;
+      }
+    }
+
+    if (!playerBar) {
+      this.resetOffsetX();
+    } else {
+      const barX = playerBar.interpolatedX.get();
+      const barWidth = this.options.width;
+      this.offsetX += (this.canvas.width - barWidth) / 2 - barX;
     }
   }
 }

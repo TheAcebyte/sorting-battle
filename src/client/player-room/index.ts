@@ -85,17 +85,31 @@ socket.on("data:state", (state: GameStateData) => {
   }
 });
 
-leftArrowButton.addEventListener("click", () => {
+function swapLeft() {
   const isDisabled = leftArrowButton.hasAttribute("data-disabled");
   if (!isDisabled) {
     socket.emit("input:swap-left");
   }
-});
+}
 
-rightArrowButton.addEventListener("click", () => {
+function swapRight() {
   const isDisabled = rightArrowButton.hasAttribute("data-disabled");
   if (!isDisabled) {
     socket.emit("input:swap-right");
+  }
+}
+
+leftArrowButton.addEventListener("click", swapLeft);
+window.addEventListener("keydown", (event: KeyboardEvent) => { 
+  if (event.key == "ArrowLeft") {
+    swapLeft();
+  }
+});
+
+rightArrowButton.addEventListener("click", swapRight);
+window.addEventListener("keydown", (event: KeyboardEvent) => { 
+  if (event.key == "ArrowRight") {
+    swapRight();
   }
 });
 

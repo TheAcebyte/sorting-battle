@@ -42,7 +42,7 @@ body {
 }
 
 #subtitle {
-  color: var(--fg-secondary);
+  color: var(--fg-accent);
   font-size: 32px;
 }
 

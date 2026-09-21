@@ -7,17 +7,17 @@ import { config } from "./config";
 class Team {
   private bars: Bar[];
   private sortedBars: Bar[];
-  private availableHeights: Deque<number>;
+  private heights: Deque<number>;
   private score: number;
 
   public constructor() {
     this.bars = [];
     this.sortedBars = [];
-    this.availableHeights = this.generateAvailableHeights();
+    this.heights = this.generateHeights();
     this.score = 0;
   }
 
-  private generateAvailableHeights() {
+  private generateHeights() {
     const length = config.MAX_BAR_HEIGHT - config.MIN_BAR_HEIGHT + 1;
     const heights = Array.from({ length }, (_, i) => config.MIN_BAR_HEIGHT + i);
     shuffleArray(heights);
@@ -63,12 +63,12 @@ class Team {
   }
 
   public addPlayer(playerId: string) {
-    if (this.availableHeights.isEmpty()) {
-      throw new Error("List of available heights is empty");
+    if (this.heights.isEmpty()) {
+      this.heights = this.generateHeights();
     }
 
     const barId = randomUUID();
-    const height = this.availableHeights.popLeft();
+    const height = this.heights.popLeft();
     const bar = { barId, playerId, height };
     this.bars.push(bar);
 
@@ -85,7 +85,7 @@ class Team {
     const i = this.getPlayerIndex(playerId);
     const { height } = this.bars[i];
     this.bars.splice(i, 1);
-    this.availableHeights.pushRight(height);
+    this.heights.pushRight(height);
 
     const j = this.getHeightRank(height);
     this.sortedBars.splice(j, 1);
@@ -98,7 +98,7 @@ class Team {
     }
 
     const { playerId, height } = this.bars.pop()!;
-    this.availableHeights.pushRight(height);
+    this.heights.pushRight(height);
     const i = this.getHeightRank(height);
     this.sortedBars.splice(i, 1);
     this.calculateScore();
